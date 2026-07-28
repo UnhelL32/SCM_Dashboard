@@ -1,4 +1,4 @@
-# SCM-by-MInhaj
+# SCM-by-Minhaj
 SCM app demo
 # Supply Chain Management Dashboard Web Application
 
