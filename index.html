@@ -493,6 +493,32 @@
         </div>
     </div>
 
+    <!-- Modal Form: Edit Record -->
+    <div id="edit-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Edit Record <span id="edit-record-id-title" class="text-indigo-400 font-mono"></span>
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="edit-record-form" onsubmit="handleEditRecordSubmit(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="edit-target-id">
+                <div id="edit-fields-container" class="grid grid-cols-2 gap-3">
+                    <!-- Pre-populated fields generated dynamically -->
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-medium">Update Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal Form: Add Custom Column -->
     <div id="add-column-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
@@ -766,6 +792,78 @@
 
             rawDataset.push(newRecord);
             closeAddModal();
+            applyFilters();
+        }
+
+        // --- EDIT RECORD MODAL HANDLERS ---
+        function openEditModal(recordId) {
+            const record = rawDataset.find(r => r.id === recordId);
+            if (!record) return;
+
+            document.getElementById('edit-target-id').value = recordId;
+            document.getElementById('edit-record-id-title').innerText = `(${recordId})`;
+
+            const container = document.getElementById('edit-fields-container');
+            container.innerHTML = '';
+
+            columnSchema.forEach(col => {
+                if (col.key === 'id') return; // ID is immutable
+
+                const wrapper = document.createElement('div');
+                const label = document.createElement('label');
+                label.className = 'block text-slate-400 mb-1';
+                label.innerText = col.label;
+
+                let input;
+                if (col.type === 'select') {
+                    input = document.createElement('select');
+                    input.id = `edit-field-${col.key}`;
+                    input.className = 'w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500';
+                    col.options.forEach(opt => {
+                        const optionEl = document.createElement('option');
+                        optionEl.value = opt;
+                        optionEl.innerText = opt;
+                        if (record[col.key] === opt) optionEl.selected = true;
+                        input.appendChild(optionEl);
+                    });
+                } else {
+                    input = document.createElement('input');
+                    input.type = col.type === 'number' ? 'number' : 'text';
+                    input.id = `edit-field-${col.key}`;
+                    input.value = record[col.key] !== undefined && record[col.key] !== '-' ? record[col.key] : '';
+                    if (col.type === 'number') input.min = '0';
+                    input.className = 'w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500';
+                }
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                container.appendChild(wrapper);
+            });
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+            document.getElementById('edit-record-form').reset();
+        }
+
+        function handleEditRecordSubmit(e) {
+            e.preventDefault();
+            const targetId = document.getElementById('edit-target-id').value;
+            const recordIndex = rawDataset.findIndex(r => r.id === targetId);
+
+            if (recordIndex === -1) return;
+
+            columnSchema.forEach(col => {
+                if (col.key === 'id') return;
+                const field = document.getElementById(`edit-field-${col.key}`);
+                if (field) {
+                    rawDataset[recordIndex][col.key] = col.type === 'number' ? (parseInt(field.value) || 0) : (field.value.trim() || '-');
+                }
+            });
+
+            closeEditModal();
             applyFilters();
         }
 
@@ -1063,7 +1161,7 @@
 
             const actionTh = document.createElement('th');
             actionTh.className = 'p-3 text-center';
-            actionTh.innerText = 'Delete';
+            actionTh.innerText = 'Actions';
             headerRow.appendChild(actionTh);
 
             const tbody = document.getElementById('raw-data-table-body');
@@ -1103,8 +1201,11 @@
                 });
 
                 const actionTd = document.createElement('td');
-                actionTd.className = 'p-3 text-center whitespace-nowrap';
+                actionTd.className = 'p-3 text-center whitespace-nowrap flex items-center justify-center gap-2';
                 actionTd.innerHTML = `
+                    <button onclick="openEditModal('${item.id}')" class="p-1 text-slate-400 hover:text-amber-400 transition-colors" title="Edit Record">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
                     <button onclick="deleteRecord('${item.id}')" class="p-1 text-slate-500 hover:text-rose-400 transition-colors" title="Delete Record">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
