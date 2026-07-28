@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Dashboard v1.01 - MD. Minhajul Haque (1000056022)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b',
+                        cardborder: '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col md:flex-row antialiased custom-scrollbar">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-72 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
+        <!-- Branded Header -->
+        <div class="p-5 border-b border-slate-800 flex items-center gap-3 bg-gradient-to-r from-indigo-950/40 to-slate-900">
+            <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30 flex items-center justify-center shrink-0">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div class="min-w-0">
+                <h1 class="font-bold text-sm text-white leading-tight truncate">MD. MINHAJUL HAQUE</h1>
+                <p class="text-[11px] text-indigo-400 font-medium">ID: 1000056022</p>
+                <div class="mt-1 flex items-center gap-1.5">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">MPSM</span>
+                    <span class="text-[10px] text-slate-400">BRAC University</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-1.5 flex-1">
+            <div class="px-3 pb-2 text-[10px] font-bold tracking-wider text-slate-500 uppercase">Analytics Segments</div>
+            <button onclick="switchTab('overview')" id="nav-overview" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-indigo-400 bg-indigo-600/10 border border-indigo-500/20">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+            </button>
+            <button onclick="switchTab('supplier')" id="nav-supplier" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                <i data-lucide="users" class="w-4 h-4"></i> Supplier Analysis
+            </button>
+            <button onclick="switchTab('warehouse')" id="nav-warehouse" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                <i data-lucide="warehouse" class="w-4 h-4"></i> Warehouse Location
+            </button>
+            <button onclick="switchTab('product')" id="nav-product" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                <i data-lucide="package" class="w-4 h-4"></i> Product Category
+            </button>
+            <button onclick="switchTab('monthly')" id="nav-monthly" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                <i data-lucide="line-chart" class="w-4 h-4"></i> Monthly Trends
+            </button>
+            <button onclick="switchTab('data')" id="nav-data" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                <i data-lucide="database" class="w-4 h-4"></i> Raw Data Sheet
+            </button>
+        </nav>
+
+        <!-- Personal Brand Footer Stamp -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50 text-[11px] text-slate-400 flex flex-col gap-1">
+            <div class="flex items-center justify-between text-slate-300 font-medium">
+                <span>Supply Chain App</span>
+                <span class="text-indigo-400 font-semibold">v1.01</span>
+            </div>
+            <div class="text-slate-500 text-[10px]">Designed by: <span class="text-slate-400">MD. Minhajul Haque</span></div>
+            <div class="text-slate-500 text-[10px]">BRAC University • MPSM</div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+        <!-- Top Header & Global Controls -->
+        <header class="sticky top-0 z-20 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 p-4 lg:px-8">
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex p-2 bg-indigo-500/10 text-indigo-400 rounded-lg border border-indigo-500/20">
+                        <i data-lucide="award" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="page-title" class="text-xl font-bold text-white">Dashboard Overview</h2>
+                            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-2 py-0.5 rounded-full">v1.01</span>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-full">MPSM BRAC</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Executive Procurement SCM Portfolio | Prepared by MD. Minhajul Haque (1000056022)</p>
+                    </div>
+                </div>
+
+                <!-- Global Action & Filter Bar -->
+                <div class="flex flex-wrap items-center gap-2.5 text-xs">
+
+                    <!-- Data Operations Group -->
+                    <div class="flex items-center gap-2 pr-2 border-r border-slate-800">
+                        <button onclick="openAddModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors font-medium">
+                            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Add Record
+                        </button>
+
+                        <button onclick="openAddColumnModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600/80 hover:bg-purple-500 text-white rounded-lg transition-colors font-medium">
+                            <i data-lucide="columns" class="w-3.5 h-3.5"></i> Add Column
+                        </button>
+
+                        <label class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg cursor-pointer transition-colors font-medium">
+                            <i data-lucide="file-up" class="w-3.5 h-3.5 text-sky-400"></i> Import CSV
+                            <input type="file" id="csv-file-input" accept=".csv" onchange="importCSV(event)" class="hidden">
+                        </label>
+
+                        <button onclick="exportCSV()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition-colors font-medium">
+                            <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i> Export CSV
+                        </button>
+
+                        <button onclick="clearAllData()" class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-950/50 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 rounded-lg transition-colors font-medium" title="Delete All Dataset Records">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-400"></i> Clear Data
+                        </button>
+                    </div>
+
+                    <!-- Filter Slicers -->
+                    <div class="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <select id="filter-month" onchange="applyFilters()" class="bg-transparent text-slate-200 focus:outline-none cursor-pointer">
+                            <option value="All">All Months</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+                        <i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <select id="filter-supplier" onchange="applyFilters()" class="bg-transparent text-slate-200 focus:outline-none cursor-pointer">
+                            <option value="All">All Suppliers</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <select id="filter-warehouse" onchange="applyFilters()" class="bg-transparent text-slate-200 focus:outline-none cursor-pointer">
+                            <option value="All">All Warehouses</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+                        <i data-lucide="plane" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <select id="filter-shipping" onchange="applyFilters()" class="bg-transparent text-slate-200 focus:outline-none cursor-pointer">
+                            <option value="All">All Shipping Methods</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+                        <i data-lucide="tag" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <select id="filter-category" onchange="applyFilters()" class="bg-transparent text-slate-200 focus:outline-none cursor-pointer">
+                            <option value="All">All Categories</option>
+                        </select>
+                    </div>
+
+                    <button onclick="resetFilters()" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 rounded-lg transition-colors flex items-center justify-center" title="Reset Slicers">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Body -->
+        <div class="p-4 lg:p-8 space-y-6">
+
+            <!-- Personal Branding Welcome / Status Banner -->
+            <div class="bg-gradient-to-r from-indigo-900/40 via-slate-900 to-slate-900 border border-indigo-500/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-sm shrink-0">
+                        MH
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-white">MD. Minhajul Haque</h3>
+                        <p class="text-xs text-slate-400">Master in Procurement and Supply Management (MPSM) | BRAC University • Student ID: <span class="text-indigo-300 font-mono">1000056022</span></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-end sm:self-auto">
+                    <button onclick="restoreDefaultDataset()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1 rounded-full font-medium transition-colors flex items-center gap-1.5">
+                        <i data-lucide="refresh-cw" class="w-3 h-3 text-indigo-400"></i> Restore Sample Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Metric Cards Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-medium">Total Orders</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span id="kpi-total-orders" class="text-2xl font-bold text-white">0</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">+12%</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-medium">On-Time Delivery</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span id="kpi-ontime-rate" class="text-2xl font-bold text-emerald-400">0%</span>
+                        <i data-lucide="clock" class="w-4 h-4 text-emerald-400/60"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-medium">Return Order %</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span id="kpi-return-rate" class="text-2xl font-bold text-rose-400">0%</span>
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400/60"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-medium">Fulfillment Rate</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span id="kpi-fulfillment-rate" class="text-2xl font-bold text-indigo-400">0%</span>
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400/60"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between col-span-2 md:col-span-1">
+                    <span class="text-xs text-slate-400 font-medium">Correct Orders Delivered</span>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <span id="kpi-correct-orders" class="text-2xl font-bold text-sky-400">0</span>
+                        <span id="kpi-correct-rate" class="text-xs text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 1: OVERVIEW PAGE -->
+            <div id="page-overview" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col items-center justify-center relative">
+                        <h3 class="text-sm font-semibold text-slate-300 self-start mb-4">On-Time Delivery Gauge</h3>
+                        <div class="w-64 h-36 relative flex items-center justify-center">
+                            <canvas id="chart-gauge"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2 text-center">Calculated against SLA target of 90%</p>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Return Order % by Supplier</h3>
+                        <div class="flex-1 min-h-[220px]">
+                            <canvas id="chart-overview-supplier-returns"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Fulfillment % by Product Category</h3>
+                        <div class="flex-1 min-h-[220px]">
+                            <canvas id="chart-overview-category-fulfillment"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="text-sm font-semibold text-slate-300 mb-4">On-Time Deliveries by Warehouse Location</h3>
+                    <div class="h-[260px]">
+                        <canvas id="chart-overview-warehouse-ontime"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 2: SUPPLIER ANALYSIS -->
+            <div id="page-supplier" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Total Orders by Supplier</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-supplier-total-orders"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">On-Time Deliveries by Supplier</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-supplier-ontime"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Return Orders by Supplier</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-supplier-returns"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Correct Orders Delivered by Supplier</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-supplier-correct"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 3: WAREHOUSE LOCATION ANALYSIS -->
+            <div id="page-warehouse" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Total Orders by Warehouse Location</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-wh-total-orders"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Return Order % by Warehouse</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-wh-return-rate"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">On-Time Delivery Share (Pie)</h3>
+                        <div class="h-[260px] flex justify-center">
+                            <canvas id="chart-wh-ontime-pie"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Fulfillment % by Warehouse</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-wh-fulfillment"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 4: PRODUCT CATEGORY ANALYSIS -->
+            <div id="page-product" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">On-Time Deliveries by Product Category</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-cat-ontime"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Return Order % by Category</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-cat-returns"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Total Orders by Category</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-cat-total-orders"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Correct Orders Delivered by Category</h3>
+                        <div class="h-[260px]">
+                            <canvas id="chart-cat-correct"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 5: MONTHLY TRENDS -->
+            <div id="page-monthly" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold text-slate-300 mb-4">Monthly On-Time Deliveries vs Total Orders</h3>
+                        <div class="h-[280px]">
+                            <canvas id="chart-monthly-trend"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                            <h3 class="text-sm font-semibold text-slate-300 mb-4">Monthly Return Orders</h3>
+                            <div class="h-[240px]">
+                                <canvas id="chart-monthly-returns"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                            <h3 class="text-sm font-semibold text-slate-300 mb-4">Monthly Fulfilled Orders</h3>
+                            <div class="h-[240px]">
+                                <canvas id="chart-monthly-fulfilled"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENT 6: RAW DATA SHEET -->
+            <div id="page-data" class="tab-content hidden space-y-4">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+                        <div>
+                            <h3 class="text-sm font-semibold text-slate-300">Supply Chain Master Data Sheet</h3>
+                            <p class="text-xs text-slate-500">Curated & Verified by MD. Minhajul Haque (Student ID: 1000056022)</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openAddColumnModal()" class="text-xs bg-purple-950/60 text-purple-300 hover:bg-purple-900 border border-purple-800/80 px-3 py-1 rounded-full transition-colors flex items-center gap-1">
+                                <i data-lucide="plus" class="w-3 h-3 text-purple-400"></i> Custom Column
+                            </button>
+                            <span id="data-count-tag" class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700">0 Records</span>
+                            <button onclick="clearAllData()" class="text-xs bg-rose-950/60 text-rose-300 hover:bg-rose-900 border border-rose-800/80 px-3 py-1 rounded-full transition-colors flex items-center gap-1">
+                                <i data-lucide="trash-2" class="w-3 h-3 text-rose-400"></i> Clear Sheet
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-800/80 text-slate-400 uppercase font-medium">
+                                <tr id="raw-table-header-row">
+                                    <!-- Dynamic headers rendered via JS -->
+                                </tr>
+                            </thead>
+                            <tbody id="raw-data-table-body" class="divide-y divide-slate-800 bg-slate-900/40">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Branding Credit -->
+            <footer class="pt-4 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+                <div>
+                    Supply Chain Analytics Application <span class="text-indigo-400 font-semibold">v1.01</span> &copy; <span id="copyright-year">2026</span> | <span class="text-slate-400">MD. Minhajul Haque</span> (ID: 1000056022)
+                </div>
+                <div class="flex items-center gap-2 text-slate-400">
+                    <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">MPSM</span>
+                    <span>BRAC University</span>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- Modal Form: Add Record -->
+    <div id="add-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-400"></i> Add New Record
+                </h3>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="add-record-form" onsubmit="handleAddRecord(event)" class="space-y-4 text-xs">
+                <div id="form-fields-container" class="grid grid-cols-2 gap-3">
+                    <!-- Standard + Custom inputs generated dynamically -->
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form: Add Custom Column -->
+    <div id="add-column-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="columns" class="w-5 h-5 text-purple-400"></i> Add Custom Column
+                </h3>
+                <button onclick="closeAddColumnModal()" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAddColumn(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-slate-400 mb-1">Column Name / Title</label>
+                    <input type="text" id="custom-col-name" placeholder="e.g., ESG Audit Compliance, LCC Analysis ($)" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Preset Quick Select Options</label>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <button type="button" onclick="fillPresetColumn('ESG Audit Compliance')" class="px-2.5 py-1 bg-slate-800 border border-slate-700 hover:border-purple-500 rounded text-slate-300">ESG Audit Compliance</button>
+                        <button type="button" onclick="fillPresetColumn('LCC Analysis ($)')" class="px-2.5 py-1 bg-slate-800 border border-slate-700 hover:border-purple-500 rounded text-slate-300">LCC Analysis ($)</button>
+                        <button type="button" onclick="fillPresetColumn('Sourcing Risk Score')" class="px-2.5 py-1 bg-slate-800 border border-slate-700 hover:border-purple-500 rounded text-slate-300">Sourcing Risk Score</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                    <button type="button" onclick="closeAddColumnModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium">Add Column</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        document.getElementById('copyright-year').innerText = new Date().getFullYear();
+
+        // Master Column Schema Definitions
+        let columnSchema = [
+            { key: 'id', label: 'Record ID', isDefault: true, type: 'text' },
+            { key: 'month', label: 'Month', isDefault: true, type: 'text' },
+            { key: 'supplier', label: 'Supplier', isDefault: true, type: 'text' },
+            { key: 'warehouse', label: 'Warehouse', isDefault: true, type: 'text' },
+            { key: 'shipping', label: 'Shipping', isDefault: true, type: 'select', options: ['Air', 'Rail', 'Sea', 'Truck'] },
+            { key: 'category', label: 'Category', isDefault: true, type: 'text' },
+            { key: 'total', label: 'Total Orders', isDefault: true, type: 'number' },
+            { key: 'onTime', label: 'On-Time', isDefault: true, type: 'number' },
+            { key: 'correct', label: 'Correct', isDefault: true, type: 'number' },
+            { key: 'returned', label: 'Returned', isDefault: true, type: 'number' },
+            { key: 'fulfilled', label: 'Fulfilled', isDefault: true, type: 'number' },
+            { key: 'esgCompliance', label: 'ESG Audit Compliance', isDefault: false, type: 'text' },
+            { key: 'lccAnalysis', label: 'LCC Analysis ($)', isDefault: false, type: 'text' }
+        ];
+
+        // Baseline Dataset Backup
+        const initialDefaultDataset = [
+            { id: "REC-1001", month: "Jan", supplier: "Apex Logistics", warehouse: "Los Angeles", shipping: "Air", category: "Electronics", total: 450, onTime: 410, correct: 395, returned: 22, fulfilled: 440, esgCompliance: "Compliant (A+)", lccAnalysis: "12,450" },
+            { id: "REC-1002", month: "Jan", supplier: "Nexus Cargo", warehouse: "Chicago", shipping: "Truck", category: "Apparel", total: 320, onTime: 280, correct: 270, returned: 18, fulfilled: 300, esgCompliance: "Pending Audit", lccAnalysis: "8,900" },
+            { id: "REC-1003", month: "Jan", supplier: "Global Freight", warehouse: "Dallas", shipping: "Rail", category: "Industrial", total: 580, onTime: 510, correct: 490, returned: 35, fulfilled: 550, esgCompliance: "Compliant (A)", lccAnalysis: "15,200" },
+            { id: "REC-1004", month: "Jan", supplier: "Vanguard Express", warehouse: "New York", shipping: "Sea", category: "Automotive", total: 290, onTime: 240, correct: 230, returned: 20, fulfilled: 275, esgCompliance: "Non-Compliant", lccAnalysis: "7,800" },
+
+            { id: "REC-1005", month: "Feb", supplier: "Apex Logistics", warehouse: "Chicago", shipping: "Sea", category: "Industrial", total: 490, onTime: 435, correct: 420, returned: 24, fulfilled: 470, esgCompliance: "Compliant (A+)", lccAnalysis: "13,100" },
+            { id: "REC-1006", month: "Feb", supplier: "Nexus Cargo", warehouse: "Los Angeles", shipping: "Air", category: "Electronics", total: 380, onTime: 330, correct: 315, returned: 31, fulfilled: 360, esgCompliance: "Compliant (B)", lccAnalysis: "9,500" },
+            { id: "REC-1007", month: "Feb", supplier: "Global Freight", warehouse: "New York", shipping: "Truck", category: "Apparel", total: 610, onTime: 560, correct: 540, returned: 28, fulfilled: 590, esgCompliance: "Compliant (A)", lccAnalysis: "16,800" },
+            { id: "REC-1008", month: "Feb", supplier: "Vanguard Express", warehouse: "Dallas", shipping: "Rail", category: "Automotive", total: 310, onTime: 270, correct: 250, returned: 19, fulfilled: 295, esgCompliance: "Pending Audit", lccAnalysis: "8,100" },
+
+            { id: "REC-1009", month: "Mar", supplier: "Apex Logistics", warehouse: "Dallas", shipping: "Truck", category: "Apparel", total: 520, onTime: 480, correct: 460, returned: 15, fulfilled: 505, esgCompliance: "Compliant (A+)", lccAnalysis: "14,300" },
+            { id: "REC-1010", month: "Mar", supplier: "Nexus Cargo", warehouse: "New York", shipping: "Rail", category: "Industrial", total: 410, onTime: 365, correct: 350, returned: 22, fulfilled: 390, esgCompliance: "Compliant (B)", lccAnalysis: "10,200" },
+            { id: "REC-1011", month: "Mar", supplier: "Global Freight", warehouse: "Los Angeles", shipping: "Air", category: "Automotive", total: 640, onTime: 590, correct: 570, returned: 42, fulfilled: 620, esgCompliance: "Compliant (A)", lccAnalysis: "17,500" },
+            { id: "REC-1012", month: "Mar", supplier: "Vanguard Express", warehouse: "Chicago", shipping: "Sea", category: "Electronics", total: 330, onTime: 290, correct: 280, returned: 14, fulfilled: 315, esgCompliance: "Compliant (A+)", lccAnalysis: "8,600" }
+        ];
+
+        let rawDataset = JSON.parse(JSON.stringify(initialDefaultDataset));
+        let chartInstances = {};
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-400', 'bg-indigo-600/10', 'border', 'border-indigo-500/20');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`page-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.add('text-indigo-400', 'bg-indigo-600/10', 'border', 'border-indigo-500/20');
+            activeBtn.classList.remove('text-slate-400');
+
+            const titles = {
+                overview: 'Dashboard Overview',
+                supplier: 'Supplier Analysis Segment',
+                warehouse: 'Warehouse Location Segment',
+                product: 'Product Category Segment',
+                monthly: 'Monthly Trend Segment',
+                data: 'Raw Data & Calculations'
+            };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        // Dynamic Filter Population
+        function populateFilterDropdowns() {
+            const months = [...new Set(rawDataset.map(d => d.month).filter(Boolean))];
+            const suppliers = [...new Set(rawDataset.map(d => d.supplier).filter(Boolean))];
+            const warehouses = [...new Set(rawDataset.map(d => d.warehouse).filter(Boolean))];
+            const shippings = [...new Set(rawDataset.map(d => d.shipping).filter(Boolean))];
+            const categories = [...new Set(rawDataset.map(d => d.category).filter(Boolean))];
+
+            updateSelectOptions('filter-month', months, 'All Months');
+            updateSelectOptions('filter-supplier', suppliers, 'All Suppliers');
+            updateSelectOptions('filter-warehouse', warehouses, 'All Warehouses');
+            updateSelectOptions('filter-shipping', shippings, 'All Shipping Methods');
+            updateSelectOptions('filter-category', categories, 'All Categories');
+        }
+
+        function updateSelectOptions(id, items, defaultLabel) {
+            const select = document.getElementById(id);
+            const currentVal = select.value;
+            select.innerHTML = `<option value="All">${defaultLabel}</option>`;
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.innerText = item;
+                select.appendChild(opt);
+            });
+            if (items.includes(currentVal)) select.value = currentVal;
+        }
+
+        // Filtering Engine
+        function getFilteredData() {
+            const month = document.getElementById('filter-month').value;
+            const supplier = document.getElementById('filter-supplier').value;
+            const warehouse = document.getElementById('filter-warehouse').value;
+            const shipping = document.getElementById('filter-shipping').value;
+            const category = document.getElementById('filter-category').value;
+
+            return rawDataset.filter(item => {
+                return (month === 'All' || item.month === month) &&
+                       (supplier === 'All' || item.supplier === supplier) &&
+                       (warehouse === 'All' || item.warehouse === warehouse) &&
+                       (shipping === 'All' || item.shipping === shipping) &&
+                       (category === 'All' || item.category === category);
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-month').value = 'All';
+            document.getElementById('filter-supplier').value = 'All';
+            document.getElementById('filter-warehouse').value = 'All';
+            document.getElementById('filter-shipping').value = 'All';
+            document.getElementById('filter-category').value = 'All';
+            applyFilters();
+        }
+
+        function applyFilters() {
+            populateFilterDropdowns();
+            const data = getFilteredData();
+            updateKPIs(data);
+            renderCharts(data);
+            renderDataTable(data);
+        }
+
+        // Dynamic Custom Column Modal Handlers
+        function openAddColumnModal() {
+            document.getElementById('add-column-modal').classList.remove('hidden');
+        }
+
+        function closeAddColumnModal() {
+            document.getElementById('add-column-modal').classList.add('hidden');
+            document.getElementById('custom-col-name').value = '';
+        }
+
+        function fillPresetColumn(name) {
+            document.getElementById('custom-col-name').value = name;
+        }
+
+        function handleAddColumn(e) {
+            e.preventDefault();
+            const colName = document.getElementById('custom-col-name').value.trim();
+            if (!colName) return;
+
+            const key = colName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+            if (columnSchema.some(c => c.key === key)) {
+                alert("Column key already exists.");
+                return;
+            }
+
+            columnSchema.push({
+                key,
+                label: colName,
+                isDefault: false,
+                type: 'text'
+            });
+
+            rawDataset.forEach(row => { row[key] = row[key] || '-'; });
+
+            closeAddColumnModal();
+            applyFilters();
+        }
+
+        function removeCustomColumn(colKey) {
+            if (confirm(`Are you sure you want to delete the column "${colKey}"?`)) {
+                columnSchema = columnSchema.filter(c => c.key !== colKey);
+                rawDataset.forEach(row => { delete row[colKey]; });
+                applyFilters();
+            }
+        }
+
+        // Add Record Modal Handlers
+        function openAddModal() {
+            renderDynamicFormFields();
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+            document.getElementById('add-record-form').reset();
+        }
+
+        function renderDynamicFormFields() {
+            const container = document.getElementById('form-fields-container');
+            container.innerHTML = '';
+
+            columnSchema.forEach(col => {
+                if (col.key === 'id') return;
+
+                const wrapper = document.createElement('div');
+                const label = document.createElement('label');
+                label.className = 'block text-slate-400 mb-1';
+                label.innerText = col.label;
+
+                let input;
+                if (col.type === 'select') {
+                    input = document.createElement('select');
+                    input.id = `add-field-${col.key}`;
+                    input.className = 'w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-indigo-500';
+                    col.options.forEach(opt => {
+                        const optionEl = document.createElement('option');
+                        optionEl.value = opt;
+                        optionEl.innerText = opt;
+                        input.appendChild(optionEl);
+                    });
+                } else {
+                    input = document.createElement('input');
+                    input.type = col.type === 'number' ? 'number' : 'text';
+                    input.id = `add-field-${col.key}`;
+                    input.placeholder = col.type === 'number' ? '0' : `Enter ${col.label}`;
+                    if (col.type === 'number') input.min = '0';
+                    input.className = 'w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-indigo-500';
+                }
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function handleAddRecord(e) {
+            e.preventDefault();
+            const newRecord = {
+                id: `REC-${1000 + rawDataset.length + 1}`
+            };
+
+            columnSchema.forEach(col => {
+                if (col.key === 'id') return;
+                const field = document.getElementById(`add-field-${col.key}`);
+                if (field) {
+                    newRecord[col.key] = col.type === 'number' ? (parseInt(field.value) || 0) : (field.value.trim() || '-');
+                }
+            });
+
+            rawDataset.push(newRecord);
+            closeAddModal();
+            applyFilters();
+        }
+
+        function deleteRecord(recordId) {
+            if (confirm(`Are you sure you want to delete record ${recordId}?`)) {
+                rawDataset = rawDataset.filter(r => r.id !== recordId);
+                applyFilters();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm("Are you sure you want to delete ALL records from the dataset?")) {
+                rawDataset = [];
+                applyFilters();
+            }
+        }
+
+        function restoreDefaultDataset() {
+            if (confirm("Restore original baseline sample dataset?")) {
+                rawDataset = JSON.parse(JSON.stringify(initialDefaultDataset));
+                applyFilters();
+            }
+        }
+
+        // CSV Import
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+                if (lines.length < 2) return;
+
+                const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+                
+                headers.forEach(h => {
+                    const key = h.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                    if (key && !columnSchema.some(c => c.key === key)) {
+                        columnSchema.push({ key, label: h, isDefault: false, type: 'text' });
+                    }
+                });
+
+                const imported = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i].split(',').map(r => r.replace(/"/g, '').trim());
+                    if (row.length === 0) continue;
+
+                    const rowObj = {};
+                    headers.forEach((h, idx) => {
+                        const key = h.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                        const schemaItem = columnSchema.find(c => c.key === key);
+                        if (schemaItem && schemaItem.type === 'number') {
+                            rowObj[key] = parseInt(row[idx]) || 0;
+                        } else {
+                            rowObj[key] = row[idx] || '-';
+                        }
+                    });
+
+                    if (!rowObj.id) rowObj.id = `REC-${1000 + rawDataset.length + i}`;
+                    imported.push(rowObj);
+                }
+
+                if (imported.length > 0) {
+                    rawDataset = rawDataset.concat(imported);
+                    applyFilters();
+                    alert(`Successfully imported ${imported.length} new records.`);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // CSV Export
+        function exportCSV() {
+            const dataToExport = getFilteredData();
+            if (dataToExport.length === 0) {
+                alert("No data available to export.");
+                return;
+            }
+
+            const headers = columnSchema.map(c => c.label);
+            const csvRows = [headers.join(",")];
+
+            dataToExport.forEach(item => {
+                const row = columnSchema.map(c => `"${item[c.key] !== undefined ? item[c.key] : '-'}"`);
+                csvRows.push(row.join(","));
+            });
+
+            const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Supply_Chain_Report_MinhajulHaque_v1.01_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // KPI Calculation Engine
+        function updateKPIs(data) {
+            const totalOrders = data.reduce((acc, curr) => acc + (curr.total || 0), 0);
+            const totalOnTime = data.reduce((acc, curr) => acc + (curr.onTime || 0), 0);
+            const totalCorrect = data.reduce((acc, curr) => acc + (curr.correct || 0), 0);
+            const totalReturned = data.reduce((acc, curr) => acc + (curr.returned || 0), 0);
+            const totalFulfilled = data.reduce((acc, curr) => acc + (curr.fulfilled || 0), 0);
+
+            const onTimeRate = totalOrders ? ((totalOnTime / totalOrders) * 100).toFixed(1) : 0;
+            const returnRate = totalOrders ? ((totalReturned / totalOrders) * 100).toFixed(1) : 0;
+            const fulfillmentRate = totalOrders ? ((totalFulfilled / totalOrders) * 100).toFixed(1) : 0;
+            const correctRate = totalOrders ? ((totalCorrect / totalOrders) * 100).toFixed(1) : 0;
+
+            document.getElementById('kpi-total-orders').innerText = totalOrders.toLocaleString();
+            document.getElementById('kpi-ontime-rate').innerText = `${onTimeRate}%`;
+            document.getElementById('kpi-return-rate').innerText = `${returnRate}%`;
+            document.getElementById('kpi-fulfillment-rate').innerText = `${fulfillmentRate}%`;
+            document.getElementById('kpi-correct-orders').innerText = totalCorrect.toLocaleString();
+            document.getElementById('kpi-correct-rate').innerText = `${correctRate}%`;
+
+            updateGaugeChart(onTimeRate);
+        }
+
+        function updateGaugeChart(rate) {
+            if (chartInstances['gauge']) chartInstances['gauge'].destroy();
+
+            const ctx = document.getElementById('chart-gauge').getContext('2d');
+            chartInstances['gauge'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['On-Time Rate', 'Remaining'],
+                    datasets: [{
+                        data: [rate, Math.max(0, 100 - rate)],
+                        backgroundColor: ['#10b981', '#1e293b'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    cutout: '78%'
+                }
+            });
+        }
+
+        function groupDataByKey(data, key) {
+            return data.reduce((acc, curr) => {
+                const group = curr[key] || 'Unassigned';
+                if (!acc[group]) {
+                    acc[group] = { total: 0, onTime: 0, correct: 0, returned: 0, fulfilled: 0 };
+                }
+                acc[group].total += curr.total || 0;
+                acc[group].onTime += curr.onTime || 0;
+                acc[group].correct += curr.correct || 0;
+                acc[group].returned += curr.returned || 0;
+                acc[group].fulfilled += curr.fulfilled || 0;
+                return acc;
+            }, {});
+        }
+
+        function createChart(canvasId, type, labels, datasets, options = {}) {
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            const defaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } }
+                },
+                scales: type !== 'pie' && type !== 'doughnut' ? {
+                    x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
+                    y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
+                } : {}
+            };
+
+            chartInstances[canvasId] = new Chart(ctx, {
+                type,
+                data: { labels, datasets },
+                options: { ...defaultOptions, ...options }
+            });
+        }
+
+        function renderCharts(data) {
+            const bySupplier = groupDataByKey(data, 'supplier');
+            const byWarehouse = groupDataByKey(data, 'warehouse');
+            const byCategory = groupDataByKey(data, 'category');
+            const byMonth = groupDataByKey(data, 'month');
+
+            // Overview Tab
+            const supplierLabels = Object.keys(bySupplier);
+            const suppReturnRates = supplierLabels.map(k => ((bySupplier[k].returned / (bySupplier[k].total || 1)) * 100).toFixed(1));
+            createChart('chart-overview-supplier-returns', 'bar', supplierLabels, [{
+                label: 'Return %', data: suppReturnRates, backgroundColor: '#f43f5e', borderRadius: 6
+            }]);
+
+            const catLabels = Object.keys(byCategory);
+            const catFulfillRates = catLabels.map(k => ((byCategory[k].fulfilled / (byCategory[k].total || 1)) * 100).toFixed(1));
+            createChart('chart-overview-category-fulfillment', 'bar', catLabels, [{
+                label: 'Fulfillment %', data: catFulfillRates, backgroundColor: '#6366f1', borderRadius: 6
+            }]);
+
+            const whLabels = Object.keys(byWarehouse);
+            const whOnTime = whLabels.map(k => byWarehouse[k].onTime);
+            createChart('chart-overview-warehouse-ontime', 'bar', whLabels, [{
+                label: 'On-Time Orders', data: whOnTime, backgroundColor: '#10b981', borderRadius: 6
+            }]);
+
+            // Supplier Tab
+            createChart('chart-supplier-total-orders', 'bar', supplierLabels, [{
+                label: 'Total Orders', data: supplierLabels.map(k => bySupplier[k].total), backgroundColor: '#38bdf8', borderRadius: 6
+            }]);
+            createChart('chart-supplier-ontime', 'bar', supplierLabels, [{
+                label: 'On-Time Deliveries', data: supplierLabels.map(k => bySupplier[k].onTime), backgroundColor: '#34d399', borderRadius: 6
+            }]);
+            createChart('chart-supplier-returns', 'bar', supplierLabels, [{
+                label: 'Returned Orders', data: supplierLabels.map(k => bySupplier[k].returned), backgroundColor: '#fb7185', borderRadius: 6
+            }]);
+            createChart('chart-supplier-correct', 'bar', supplierLabels, [{
+                label: 'Correct Orders', data: supplierLabels.map(k => bySupplier[k].correct), backgroundColor: '#a78bfa', borderRadius: 6
+            }]);
+
+            // Warehouse Tab
+            createChart('chart-wh-total-orders', 'bar', whLabels, [{
+                label: 'Total Orders', data: whLabels.map(k => byWarehouse[k].total), backgroundColor: '#818cf8', borderRadius: 6
+            }]);
+            const whReturnRates = whLabels.map(k => ((byWarehouse[k].returned / (byWarehouse[k].total || 1)) * 100).toFixed(1));
+            createChart('chart-wh-return-rate', 'bar', whLabels, [{
+                label: 'Return Rate %', data: whReturnRates, backgroundColor: '#f43f5e', borderRadius: 6
+            }]);
+            createChart('chart-wh-ontime-pie', 'doughnut', whLabels, [{
+                data: whOnTime, backgroundColor: ['#38bdf8', '#818cf8', '#34d399', '#fb7185', '#a78bfa', '#f43f5e']
+            }]);
+            const whFulfillRates = whLabels.map(k => ((byWarehouse[k].fulfilled / (byWarehouse[k].total || 1)) * 100).toFixed(1));
+            createChart('chart-wh-fulfillment', 'bar', whLabels, [{
+                label: 'Fulfillment Rate %', data: whFulfillRates, backgroundColor: '#38bdf8', borderRadius: 6
+            }]);
+
+            // Product Category Tab
+            createChart('chart-cat-ontime', 'bar', catLabels, [{
+                label: 'On-Time Deliveries', data: catLabels.map(k => byCategory[k].onTime), backgroundColor: '#10b981', borderRadius: 6
+            }]);
+            const catReturnRates = catLabels.map(k => ((byCategory[k].returned / (byCategory[k].total || 1)) * 100).toFixed(1));
+            createChart('chart-cat-returns', 'bar', catLabels, [{
+                label: 'Return %', data: catReturnRates, backgroundColor: '#f43f5e', borderRadius: 6
+            }]);
+            createChart('chart-cat-total-orders', 'bar', catLabels, [{
+                label: 'Total Orders', data: catLabels.map(k => byCategory[k].total), backgroundColor: '#818cf8', borderRadius: 6
+            }]);
+            createChart('chart-cat-correct', 'bar', catLabels, [{
+                label: 'Correct Orders', data: catLabels.map(k => byCategory[k].correct), backgroundColor: '#38bdf8', borderRadius: 6
+            }]);
+
+            // Monthly Trend Tab
+            const monthLabels = Object.keys(byMonth);
+            createChart('chart-monthly-trend', 'line', monthLabels, [
+                { label: 'Total Orders', data: monthLabels.map(m => byMonth[m].total), borderColor: '#818cf8', tension: 0.3, fill: false },
+                { label: 'On-Time Deliveries', data: monthLabels.map(m => byMonth[m].onTime), borderColor: '#34d399', tension: 0.3, fill: false }
+            ]);
+            createChart('chart-monthly-returns', 'bar', monthLabels, [{
+                label: 'Returns', data: monthLabels.map(m => byMonth[m].returned), backgroundColor: '#f43f5e', borderRadius: 6
+            }]);
+            createChart('chart-monthly-fulfilled', 'bar', monthLabels, [{
+                label: 'Fulfilled', data: monthLabels.map(m => byMonth[m].fulfilled), backgroundColor: '#6366f1', borderRadius: 6
+            }]);
+        }
+
+        function renderDataTable(data) {
+            const headerRow = document.getElementById('raw-table-header-row');
+            headerRow.innerHTML = '';
+
+            columnSchema.forEach(col => {
+                const th = document.createElement('th');
+                th.className = 'p-3 whitespace-nowrap';
+                if (!col.isDefault) {
+                    th.innerHTML = `
+                        <div class="flex items-center gap-1.5 text-purple-400">
+                            <span>${col.label}</span>
+                            <button onclick="removeCustomColumn('${col.key}')" class="text-slate-500 hover:text-rose-400" title="Remove Column">
+                                <i data-lucide="x" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    th.innerText = col.label;
+                }
+                headerRow.appendChild(th);
+            });
+
+            const actionTh = document.createElement('th');
+            actionTh.className = 'p-3 text-center';
+            actionTh.innerText = 'Delete';
+            headerRow.appendChild(actionTh);
+
+            const tbody = document.getElementById('raw-data-table-body');
+            document.getElementById('data-count-tag').innerText = `${data.length} Records`;
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="${columnSchema.length + 1}" class="p-6 text-center text-slate-500">
+                            No records found. Click <b>"Add Record"</b>, <b>"Import CSV"</b>, or <b>"Restore Sample Data"</b>.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition-colors';
+                
+                columnSchema.forEach(col => {
+                    const td = document.createElement('td');
+                    td.className = 'p-3 whitespace-nowrap';
+                    const val = item[col.key] !== undefined ? item[col.key] : '-';
+
+                    if (col.key === 'id') td.className += ' font-mono text-slate-400';
+                    else if (col.key === 'supplier') td.className += ' text-slate-200 font-medium';
+                    else if (col.key === 'onTime') td.className += ' text-emerald-400';
+                    else if (col.key === 'correct') td.className += ' text-sky-400';
+                    else if (col.key === 'returned') td.className += ' text-rose-400';
+                    else if (col.key === 'fulfilled') td.className += ' text-indigo-400';
+                    else if (!col.isDefault) td.className += ' text-purple-300 font-medium';
+
+                    td.innerText = val;
+                    tr.appendChild(td);
+                });
+
+                const actionTd = document.createElement('td');
+                actionTd.className = 'p-3 text-center whitespace-nowrap';
+                actionTd.innerHTML = `
+                    <button onclick="deleteRecord('${item.id}')" class="p-1 text-slate-500 hover:text-rose-400 transition-colors" title="Delete Record">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                tr.appendChild(actionTd);
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            applyFilters();
+        });
+    </script>
+</body>
+</html>
